@@ -1,0 +1,10 @@
+name: Survival
+version: ${project.version}
+main: com.redblock6.survival.Main
+api-version: 1.16
+authors: [ Redblock6 ]
+website: mc.redblock6.com
+
+commands:
+  streaming:
+    description: Enable or disable streaming mode
