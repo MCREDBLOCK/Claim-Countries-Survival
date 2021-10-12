@@ -23,17 +23,16 @@ public class StreamingCommand implements Listener, CommandExecutor {
                 Main.streaming = false;
                 p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_DIDGERIDOO, 100, 0);
                 sender.sendMessage(Main.translate("&4&l> &fStreaming mode disabled."));
-                Bukkit.setWhitelist(true);
                 for (Player loopplayer : Bukkit.getOnlinePlayers()) {
+                    ((Player) sender).sendTitle(Main.translate("&4&lNO LONGER STREAMING"), Main.translate("&fAll non-whitelisted players will be kicked"));
                     if (!Bukkit.getWhitelistedPlayers().contains(loopplayer)) {
-                        Bukkit.broadcastMessage(Main.translate("&4&l> &fKicked &c" + loopplayer.getDisplayName()));
+                        Bukkit.getServer().broadcastMessage(Main.translate("&4&l> &fKicked &c" + loopplayer.getDisplayName()));
                         loopplayer.kickPlayer(Main.translate("&fYou are not whitelisted on this server!"));
                     }
                 }
             } else {
                 Main.streaming = true;
                 sender.sendMessage(Main.translate("&4&l> &fStreaming mode enabled!"));
-                Bukkit.setWhitelist(false);
                 p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_DIDGERIDOO, 100, 2);
             }
         }

@@ -8,3 +8,27 @@ website: mc.redblock6.com
 commands:
   streaming:
     description: Enable or disable streaming mode
+  warnreboot:
+    description: Warns the server before a reboot
+  gmc:
+    description: Creative
+  gms:
+    description: Survival
+  gmsp:
+    description: Spectator
+  gma:
+    description: Adventure
+  country:
+    description: Nation
+
+permissions:
+  redblock.gamemode.creative:
+    description: Sets your gamemode to creative
+  redblock.gamemode.survival:
+    description: Sets your gamemode to survival
+  redblock.gamemode.adventure:
+    description: Sets your gamemode to adventure
+  redblock.gamemode.spectator:
+    description: Sets your gamemode to spectator
+  redblock.warnreboot:
+    description: Warn players of a reboot
