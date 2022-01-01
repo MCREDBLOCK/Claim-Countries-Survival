@@ -18,8 +18,12 @@ commands:
     description: Spectator
   gma:
     description: Adventure
-  country:
-    description: Nation
+  rtp:
+    description: Request Teleport
+  agree:
+    description: Agree to Request
+  deny:
+    description: Deny Request
 
 permissions:
   redblock.gamemode.creative:

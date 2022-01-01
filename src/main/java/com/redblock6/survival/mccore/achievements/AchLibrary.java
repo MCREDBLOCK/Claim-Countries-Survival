@@ -2,6 +2,7 @@ package com.redblock6.survival.mccore.achievements;
 
 import com.redblock6.survival.Main;
 import com.redblock6.survival.mccore.functions.GiveCoinsXP;
+import com.redblock6.survival.mccore.functions.GiveVanillaXP;
 import com.redblock6.survival.mccore.functions.MySQLSetterGetter;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
@@ -87,6 +88,20 @@ public class AchLibrary implements Listener {
         GiveCoinsXP.GivePlayerBoth(p, 25, 15);
     }
 
+    public static void grantSurvivalAchievement(Player p, SAchType ach) {
+        sound(p);
+        AchDatabase database = new AchDatabase(p);
+        database.addSAch(ach);
+        p.sendTitle(translate("&2&l✔"), translate("&f" + getFormattedName(ach.toString())), 10, 20, 10);
+        p.sendMessage(translate("&2&m---------------------------------"));
+        p.sendMessage(translate("&2&l✔ &a" + getFormattedName(ach.toString())));
+        p.sendMessage(translate(""));
+        p.sendMessage(translate("&4&l+ &c15 XP"));
+        p.sendMessage(translate("&2&m---------------------------------"));
+        GiveVanillaXP.GivePlayerEXP(p, 15);
+    }
+
+
     public static void revokeHubAchievement(Player p, HAchType ach) {
         p.playSound(p.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 100, 1);
         MySQLSetterGetter mysql = new MySQLSetterGetter();
@@ -103,6 +118,22 @@ public class AchLibrary implements Listener {
         p.sendMessage(translate("&4&m---------------------------------"));
         mysql.updateEXP(p.getUniqueId(), -15);
         mysql.updateDust(p.getUniqueId(), -25);
+    }
+
+    public static void revokeSurvivalAchievement(Player p, SAchType ach) {
+        p.playSound(p.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 100, 1);
+        MySQLSetterGetter mysql = new MySQLSetterGetter();
+        AchDatabase database = new AchDatabase(p);
+        database.revokeSAch(ach);
+        p.sendTitle(translate("&4&l✖"), translate("&f" + getFormattedName(ach.toString())), 10, 20, 10);
+        p.sendMessage(translate("&4&m---------------------------------"));
+        p.sendMessage(translate("&4&l✖ &c" + getFormattedName(ach.toString())));
+        p.sendMessage(translate(""));
+        p.sendMessage(translate("&4&l- &c15 XP"));
+        p.sendMessage(translate(""));
+        p.sendMessage(translate("&fAchievement Revoked!"));
+        p.sendMessage(translate("&4&m---------------------------------"));
+        GiveVanillaXP.removePlayerExp(p, -15);
     }
 
     @EventHandler

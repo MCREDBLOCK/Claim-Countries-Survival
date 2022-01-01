@@ -8,11 +8,11 @@ import com.redblock6.survival.countries.CountrySelectorHandoff;
 import com.redblock6.survival.mccore.achievements.AchDatabase;
 import com.redblock6.survival.mccore.achievements.AchLibrary;
 import com.redblock6.survival.mccore.achievements.HAchType;
+import com.redblock6.survival.mccore.achievements.SAchType;
 import com.redblock6.survival.mccore.bot.BotMain;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import org.bukkit.*;
+import org.bukkit.advancement.Advancement;
+import org.bukkit.advancement.AdvancementProgress;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -20,6 +20,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -84,12 +85,39 @@ public class JoinLeaveEvent implements Listener {
                 e.setJoinMessage(translate("&2&l> &a" + p.getDisplayName() + " &fis now spectating."));
             } else {
                 if (!new AchDatabase(p).getHubAch().contains(HAchType.Link_Your_Account_With_Core)) {
-                    p.sendTitle(translate("&4&lRUN /connect IN #general"), translate("&fThis is required to play on the &cRedSMP&f!"), 10, 1000000000, 10);
+                    p.sendTitle(translate("&4&lREDSMP SURVIVAL"), translate("&fmc.redblock6.com"), 5, 20, 5);
                     p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 100, 1);
-                } else if (Countries.isInTruce(p)) {
-                    p.sendTitle(Main.translate("&4&lCLAIM A COUNTRY"), translate("&fClaim a country to settle in!"), 10, 1000000000, 10);
-                    p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 100, 1);
-                    CountriesDatabase.openCountrySelector(p, CountrySelectorHandoff.Claim, 1);
+                    p.sendMessage(translate("&4&l> &fYou haven't linked your account to Discord! Run &c/connect &fin &c#general &fto start the linking process for extra features!"));
+                } else {
+                    p.sendTitle(translate("&4&lREDSMP SURVIVAL"), translate("&fmc.redblock6.com"), 5, 20, 5);
+                }
+
+                if (!new AchDatabase(p).getSurivalAch().contains(SAchType.Our_SMP_Adventure_Begins)) {
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            if (p.getLevel() >= 5) {
+                                AchLibrary.grantSurvivalAchievement(p, SAchType.Reach_Level_5);
+                            }
+
+                            if (p.getLevel() >= 10) {
+                                AchLibrary.grantSurvivalAchievement(p, SAchType.Reach_Level_10);
+                            }
+
+                            if (p.getLevel() >= 20) {
+                                AchLibrary.grantSurvivalAchievement(p, SAchType.Reach_Level_20);
+                            }
+
+                            if (p.getLevel() >= 50) {
+                                AchLibrary.grantSurvivalAchievement(p, SAchType.Reach_Level_5);
+                            }
+
+                            if (p.getLevel() > 100) {
+                                AchLibrary.grantSurvivalAchievement(p, SAchType.Surpass_Level_100);
+                            }
+                            AchLibrary.grantSurvivalAchievement(p, SAchType.Our_SMP_Adventure_Begins);
+                        }
+                    }.runTaskLater(pl, 20);
                 }
             }
         } else {
@@ -99,6 +127,7 @@ public class JoinLeaveEvent implements Listener {
         }
     }
 
+    /*
     @EventHandler
     public void chatEvent(AsyncPlayerChatEvent e) {
         Player p = e.getPlayer();
@@ -135,39 +164,14 @@ public class JoinLeaveEvent implements Listener {
                             CountriesDatabase.openCountrySelector(p, CountrySelectorHandoff.Claim, 1);
                         }
                     }.runTaskLater(pl, delay);
-                /*
-                new BukkitRunnable() {
-                    int i = 0;
-                    @Override
-                    public void run() {
-                        if (i == 0) {
-                            p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BASS, 100, 1);
-                        } else if (i == 1) {
-                            p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BASS, 100, 1);
-                        } else if (i == 2) {
-                            p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BASS, 100, 1);
-                            p.playSound(p.getLocation(), Sound.BLOCK_NOTE_PLING, 100, 0);
-                        } else if (i == 3) {
-                            p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BASS, 100, 1);
-                            p.playSound(p.getLocation(), Sound.BLOCK_NOTE_PLING, 100, 1);
-                        } else if (i == 4) {
-                            p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BASS, 100, 2);
-                            p.playSound(p.getLocation(), Sound.BLOCK_NOTE_PLING, 100, 2);
-                        } else if (i == 5) {
-                            ServerConnector.sendServer(p, "PRE-1");
-                            cancel();
-                        }
-                        i++;
-                    }
-                }.runTaskTimer(pl, delay, 20);
 
-                 */
                 } else if (message.equalsIgnoreCase("NO")) {
                     p.sendTitle(translate("&4&lTYPE YOUR IGN IN #general"), translate("&fThis will link your discord account to your mc account!"), 10, 1000000000, 10);
                     p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 100, 1);
                 }
             }
         }
+        */
 
 
 

@@ -3,15 +3,17 @@ package com.redblock6.survival.mccore.bot;
 import com.redblock6.survival.Main;
 import com.redblock6.survival.countries.Countries;
 import com.redblock6.survival.countries.CountriesReason;
+import com.redblock6.survival.mccore.achievements.AchDatabase;
+import com.redblock6.survival.mccore.achievements.HAchType;
+import com.redblock6.survival.mccore.events.ChatEvent;
 import com.redblock6.survival.mccore.events.JoinLeaveEvent;
+import com.redblock6.survival.mccore.functions.VoteType;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
-import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.entities.PrivateChannel;
-import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
@@ -24,6 +26,8 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+
+import static com.redblock6.survival.Main.getBot;
 
 public class BotMain extends ListenerAdapter {
     public Main pl;
@@ -39,7 +43,7 @@ public class BotMain extends ListenerAdapter {
         this.pl = main;
         initializeBot();
         bot.addEventListener(this);
-        eventsChannel = bot.getTextChannelById("881940635588890724");
+        eventsChannel = bot.getTextChannelById("926259113564983386");
     }
 
     @Override
@@ -89,6 +93,49 @@ public class BotMain extends ListenerAdapter {
         }
 
          */
+    }
+
+    @Override
+    public void onMessageReceived(MessageReceivedEvent e) {
+        String s = e.getMessage().toString();
+        Message m = e.getMessage();
+        User u = e.getAuthor();
+        MessageChannel channel = e.getChannel();
+
+        if (channel == bot.getTextChannelById("926259113564983386")) {
+            for (Player lp : Bukkit.getOnlinePlayers()) {
+                if (lp.getName().contains(u.getName())) {
+                    if (!new AchDatabase(lp).getHubAch().contains(HAchType.Link_Your_Account_With_Core)) {
+                        if (s.equalsIgnoreCase("yes")) {
+                            ChatEvent.addAQueue(lp);
+                        } else {
+                            ChatEvent.addDQueue(lp);
+                        }
+                        String tag = u.getAsTag();
+                        lp.playSound(lp.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 100, 1);
+                        m.reply(":exclamation: Please open your minecraft window to continue voting").queue();
+                        lp.sendTitle(Main.translate("&fAre you &c" + tag + " &fon discord?"), Main.translate("&fType &2&lYES &for &4&lNO &fin the chat!"), 10, 1000000000, 10);
+                        ChatEvent.addConfirm(lp);
+                    }
+                }
+            }
+        }
+    }
+
+    public void sendVotingAnnouncement(VoteType type, Player start, Player to) {
+        MessageChannel channel = eventsChannel;
+        if (type.equals(VoteType.TP)) {
+            channel.sendMessage(":information_source: " + start.getName() + " wants to tp to " + to.getName() + " on the RedSMP! Type **YES** or **NO** in the chat to vote!").queue();
+        }
+    }
+
+    public void sendVotingStatusAnnouncement(VoteType type, Player start) {
+        MessageChannel channel = eventsChannel;
+        if (type.equals(VoteType.Agree)) {
+            channel.sendMessage(":white_check_mark: " + start.getName() + " agreed to the vote!").queue();
+        } else if (type.equals(VoteType.Deny)) {
+            channel.sendMessage(":x: " + start.getName() + " does not agree to the vote!").queue();
+        }
     }
 
     public void sendNationsAnnouncement(String owner, String name, CountriesReason reason, String... args) {

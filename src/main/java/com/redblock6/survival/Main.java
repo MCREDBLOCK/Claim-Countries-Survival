@@ -25,7 +25,7 @@ public class Main extends JavaPlugin {
     public int port;
 
     public void mysqlSetup() {
-        host = "192.168.1.223";
+        host = "192.168.1.252";
         port = 3306;
         username = "mc";
         database = "mc_user";

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 public class AchDatabase {
     Player p;
     ArrayList<HAchType> achH = new ArrayList<>();
+    ArrayList<SAchType> achS = new ArrayList<>();
     ArrayList<KAchType> achK = new ArrayList<>();
 
     public AchDatabase(Player p) {
@@ -25,6 +26,18 @@ public class AchDatabase {
         j.close();
 
         return achH;
+    }
+
+    public ArrayList<SAchType> getSurivalAch() {
+        Jedis j = Main.pool.getResource();
+        for (SAchType ach : SAchType.values()) {
+            if (j.get(ach.name() + p.getUniqueId()) != null) {
+                achS.add(ach);
+            }
+        }
+        j.close();
+
+        return achS;
     }
 
     public ArrayList<KAchType> getKitAch() {
@@ -45,6 +58,12 @@ public class AchDatabase {
         j.close();
     }
 
+    public void revokeSAch(SAchType ach) {
+        Jedis j = Main.pool.getResource();
+        j.del(ach.name() + p.getUniqueId());
+        j.close();
+    }
+
     public void revokeKAch(KAchType ach) {
         Jedis j = Main.pool.getResource();
         j.del(ach.name() + p.getUniqueId());
@@ -52,6 +71,12 @@ public class AchDatabase {
     }
 
     public void addHAch(HAchType ach) {
+        Jedis j = Main.pool.getResource();
+        j.set(ach.name() + p.getUniqueId(), "HAS");
+        j.close();
+    }
+
+    public void addSAch(SAchType ach) {
         Jedis j = Main.pool.getResource();
         j.set(ach.name() + p.getUniqueId(), "HAS");
         j.close();
